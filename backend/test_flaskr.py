@@ -40,6 +40,15 @@ class TriviaTestCase(unittest.TestCase):
     ###                 tests                  ###
     ##############################################
 
+    def test_get_categories(self):
+        res = self.client().get('/categories')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_categories'])
+        self.assertTrue(len(data['categories']))  
+   
     def test_get_paginated_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
@@ -56,6 +65,28 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
+    
+    def test_delete_question(self):
+        res = self.client().delete('/questions/2')
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == 2).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], 2)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
+        self.assertEqual(question, None)
+
+    def test_422_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable Entity')
+
 
 
 # Make the tests conveniently executable

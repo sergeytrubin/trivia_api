@@ -6,12 +6,26 @@ import random
 
 from models import setup_db, Question, Category
 
+# Page size
 QUESTIONS_PER_PAGE = 10
+
+
+# Helper to paginate the questions
+def paginate_questions(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    questions = [question.format() for question in selection]
+    current_questions = questions[start:end]
+
+    return current_questions
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
+    CORS(app, resources={r"/questions/*": {"origins": "*"}})
 
     '''
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
@@ -21,24 +35,48 @@ def create_app(test_config=None):
     @TODO: Use the after_request decorator to set Access-Control-Allow
     '''
 
-    def paginate_questions(request, selection):
-        page = request.args.get('page', 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
-
-        questions = [question.format() for question in selection]
-        current_questions = questions[start:end]
-
-        return current_questions
-
-
+    # CORS Headers
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
 
     '''
     @TODO: 
     Create an endpoint to handle GET requests 
     for all available categories.
     '''
+    # curl -i http://127.0.0.1:5000/categories
+    @app.route('/categories')
+    def get_categories():
+        selection = Category.query.order_by(Category.id).all()
+        categories = [category.format() for category in selection]
 
+        if len(categories) == 0:
+            abort(404)
+
+        return jsonify({
+            "success": True,
+            "categories": categories,
+            "total_categories": len(Category.query.all())
+        })
+
+
+    '''
+    @TODO: 
+    Create an endpoint to handle GET requests for questions, 
+    including pagination (every 10 questions). 
+    This endpoint should return a list of questions, 
+    number of total questions, current category, categories. 
+
+    TEST: At this point, when you start the application
+    you should see questions and categories generated,
+    ten questions per page and pagination at the bottom of the screen for three pages.
+    Clicking on the page numbers should update the questions. 
+    '''
+    # Success: curl -i http://127.0.0.1:5000/questions?page=1
+    # Test 404: curl -i http://127.0.0.1:5000/questions?page=1000
     @app.route('/questions')
     def get_paginated_questions():
         selection = Question.query.order_by(Question.id).all()
@@ -56,24 +94,35 @@ def create_app(test_config=None):
 
     '''
     @TODO: 
-    Create an endpoint to handle GET requests for questions, 
-    including pagination (every 10 questions). 
-    This endpoint should return a list of questions, 
-    number of total questions, current category, categories. 
-
-    TEST: At this point, when you start the application
-    you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
-    Clicking on the page numbers should update the questions. 
-    '''
-
-    '''
-    @TODO: 
     Create an endpoint to DELETE question using a question ID. 
 
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page. 
     '''
+    # Delete question: curl -X DELETE http://127.0.0.1:5000/questions/8
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
+        try:
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+
+            if question is None:
+                abort(404)
+            
+            question.delete()
+
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
+
+            return jsonify({
+                "success": True,
+                "deleted": question_id,
+                "questions": current_questions,
+                "total_questions": len(Question.query.all())
+            })
+        
+        except:
+            abort(422)
+
 
     '''
     @TODO: 
@@ -131,6 +180,15 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Not Found"
         }), 404
+
+    @app.errorhandler(422)
+    def unprocessable_error(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "Unprocessable Entity"
+        }), 422
+
 
 
     return app
