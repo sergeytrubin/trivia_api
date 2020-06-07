@@ -6,7 +6,7 @@ import json
 database_name = "trivia"
 user = 'dbuser'
 password = 'zubur1'
-database_path = f"postgres://{user}:{passowrd}@{'localhost:5432'}/{database_name}"
+database_path = f"postgresql://{user}:{password}@{'localhost:5432'}/{database_name}"
 
 db = SQLAlchemy()
 
