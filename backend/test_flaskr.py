@@ -27,6 +27,13 @@ class TriviaTestCase(unittest.TestCase):
             'category': 4
         }
 
+        self.quiz_test = {
+            'previous_questions': [],
+            'quiz_category': {
+                'type': 'Science',
+                'id': 1
+            }
+        }
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -174,6 +181,28 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Bad Request')
+
+    def test_play_trivia_quiz(self):
+        """Test: Play the quiz with test quiz data"""
+        # Variables
+        res = self.client().post('/quizzes', json=self.quiz_test)
+        data = json.loads(res.data)
+        
+        # Tests
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['question']['category'], 1)
+
+    def test_422_error_play_trivia_quiz(self):
+        """Test: 422 error if the data is empty"""
+        # Variables
+        res = self.client().post('/quizzes', json={})
+        data = json.loads(res.data)
+
+        # Tests
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "Unprocessable Entity")
 
 
 # Make the tests conveniently executable

@@ -49,7 +49,7 @@ def create_app(test_config=None):
     @app.route('/categories')
     def get_categories():
         """"Get request to retrieve all categories"""
-        
+
         # Retrieve all categories
         selection = Category.query.all()
         
@@ -199,13 +199,13 @@ def create_app(test_config=None):
 
 
     # curl -i http://127.0.0.1:5000/categories/1/questions
-    @app.route('/categories/<int:id>/questions')
-    def retrieve_questions_by_category(id):
+    @app.route('/categories/<int:category_id>/questions')
+    def retrieve_questions_by_category(category_id):
         """Get all questions in category"""
 
         # Retrieve category by id
         category = Category.query.filter(
-                Category.id == id).one_or_none()     
+                Category.id == category_id).one_or_none()     
         
         # Abort 400 if result is None
         if category is None:
@@ -223,24 +223,55 @@ def create_app(test_config=None):
         # Return data in JSON format
         return jsonify({
             "success": True,
-            'current_category': category.type,
+            "current_category": category.type,
             "questions": current_questions,
             "total_questions_by_category": len(selection)
         })
 
+    #curl -X POST -H "Content-Type: application/json" -d 
+    # '{"previous_questions": [], 
+    # "quiz_category": {"type": "Science", "id": 1}}' 
+    # http://127.0.0.1:5000/quizzes
+    @app.route('/quizzes', methods=['POST'])
+    def play_trivia_quiz():
+        """Create a post request to retrieve questions for the game"""
 
+        # Collect data from the form
+        body = request.get_json()
+        previous_questions = body.get('previous_questions')
+        quiz_category = body.get('quiz_category')
 
-    '''
-    @TODO: 
-    Create a POST endpoint to get questions to play the quiz. 
-    This endpoint should take category and previous question parameters 
-    and return a random questions within the given category, 
-    if provided, and that is not one of the previous questions. 
+        try:
+            # Retrieve question that were not asked per chosen category
+            if quiz_category['id'] == 0:
+                selection = Question.query.filter(
+                        Question.id.notin_((previous_questions))).all()
+                total_questions = Question.query.all()
+            else:
+                selection = Question.query.filter(
+                    Question.category==quiz_category['id']).filter(
+                        Question.id.notin_((previous_questions))).all()
+                total_questions = Question.query.filter(
+                    Question.category==quiz_category['id']).all()
 
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not. 
-    '''
+            # Stop the game if no questions in category left
+            if len(previous_questions) == len(total_questions):
+                return jsonify({
+                    "success": True,
+                    "question": None
+                })
+            
+            # Retrieve new random question fron the selection
+            new_question = selection[random.randrange(0, len(selection))]
+
+            # Return new question
+            return jsonify({
+                "success": True,
+                "question": new_question.format()
+            })
+        except:
+            abort(422)
+
 
 
     ##############################################
@@ -287,8 +318,6 @@ def create_app(test_config=None):
             "error": 500,
             "message": "Server Error"
         }), 500
-
-
 
     return app
 
