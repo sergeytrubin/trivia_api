@@ -65,6 +65,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
+        self.assertTrue(data['categories'])
 
     def test_404_sent_requesting_beyond_valid_page(self):
         """Test: 404 error when the resource does not exists"""

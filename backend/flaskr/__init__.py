@@ -25,134 +25,128 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-    #CORS(app, resources={r"/questions/*": {"origins": "*"}})
-    CORS(app)
-
-    '''
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    '''
-
-    '''
-    @TODO: Use the after_request decorator to set Access-Control-Allow
-    '''
+    CORS(app, resources={"/": {"origins": "*"}})
 
     # CORS Headers
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add(
+            'Access-Control-Allow-Headers', 
+            'Content-Type,Authorization,true'
+        )
+        response.headers.add(
+            'Access-Control-Allow-Methods', 
+            'GET,PUT,POST,DELETE,OPTIONS'
+        )
         return response
 
     ##############################################
     ###             Endpoints                  ###
     ##############################################
-    '''
-    @TODO: 
-    Create an endpoint to handle GET requests 
-    for all available categories.
-    '''
-    # curl -i http://127.0.0.1:5000/categories
+
+
+    # Test: curl -i http://127.0.0.1:5000/categories
     @app.route('/categories')
     def get_categories():
-        selection = Category.query.order_by(Category.id).all()
-        categories = [category.format() for category in selection]
+        """"Get request to retrieve all categories"""
+        
+        # Retrieve all categories
+        selection = Category.query.all()
+        
+        # Add categories to dictionary
+        categories = {category.id: category.type for category in selection}
 
+        # Abort with 404 if no results found
         if len(categories) == 0:
             abort(404)
 
+        # Return data in JSON format
         return jsonify({
             "success": True,
             "categories": categories,
-            "total_categories": len(Category.query.all())
+            "total_categories": len(selection)
         })
 
 
-    '''
-    @TODO: 
-    Create an endpoint to handle GET requests for questions, 
-    including pagination (every 10 questions). 
-    This endpoint should return a list of questions, 
-    number of total questions, current category, categories. 
-
-    TEST: At this point, when you start the application
-    you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
-    Clicking on the page numbers should update the questions. 
-    '''
-    # Success: curl -i http://127.0.0.1:5000/questions?page=1
-    # Test 404: curl -i http://127.0.0.1:5000/questions?page=1000
+    #Test: curl -i http://127.0.0.1:5000/questions?page=1
     @app.route('/questions')
     def get_paginated_questions():
+        """Get request to retrieve all questions"""
+
+        # Retrive questions and paginate
         selection = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
 
+        # Abort with 404 if no questions retrieved
         if len(current_questions) == 0:
             abort(404)
 
+        # Retrieve and add categories to dictionary
+        categories = {
+            category.id: category.type for category in Category.query.all()}      
+
+        # Return data in JSON format
         return jsonify({
             "success": True,
             "questions": current_questions,
-            "total_questions": len(Question.query.all())
+            "total_questions": len(selection),
+            "categories": categories
         })
 
 
-    '''
-    @TODO: 
-    Create an endpoint to DELETE question using a question ID. 
-
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page. 
-    '''
-    # Delete question: curl -X DELETE http://127.0.0.1:5000/questions/8
+    # Test delete question: curl -X DELETE http://127.0.0.1:5000/questions/8
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
+        """Delete request to delete question by id"""
+
         try:
+            # Retrieve a question by id
             question = Question.query.filter(
                 Question.id == question_id).one_or_none()
 
+            # Abort 404 if result is None
             if question is None:
                 abort(404)
-            
+
+            # Delete the question
             question.delete()
 
+            # Retrieve paginated questions for return message
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
 
+            # Return data in JSON format
             return jsonify({
                 "success": True,
                 "deleted": question_id,
-                "total_questions": len(Question.query.all())
+                "total_questions": len(selection)
             })
         
         except:
+            # Abort 422 if delete could not be processed
             abort(422)
 
 
-    '''
-    @TODO: 
-    Create an endpoint to POST a new question, 
-    which will require the question and answer text, 
-    category, and difficulty score.
-
-    TEST: When you submit a question on the "Add" tab, 
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.  
-    '''
-    # Create new question
+    # Test create new question
     # curl -X POST -H "Content-Type: application/json" -d 
     # '{"question": "Who came up with the three laws of motion?", 
     # "answer": "Sir Isaac Newton", "category": 4, "difficulty": 1}' 
     # http://127.0.0.1:5000/questions
     @app.route('/questions', methods=['POST'])
     def add_question():
+        """Post request to create new question"""
+
+        # Get the new question data from the form
         body = request.get_json()
 
+        #Format new question
         new_question = body.get('question')
         new_answer = body.get('answer')
         new_category = body.get('category')
         new_difficulty = body.get('difficulty')
 
         try:
+            # POST the new question to database
             question = Question(
                 question=new_question,
                 answer=new_answer,
@@ -161,6 +155,7 @@ def create_app(test_config=None):
             )
             question.insert()
 
+            # Retrieve paginated questions for return message
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
 
@@ -168,38 +163,34 @@ def create_app(test_config=None):
                 "success": True,
                 "created": question.id,
                 "questions": current_questions,
-                "total_questions": len(Question.query.all())
+                "total_questions": len(selection)
             })
         
         except:
             abort(422)
 
-    '''
-    @TODO: 
-    Create a POST endpoint to get questions based on a search term. 
-    It should return any questions for whom the search term 
-    is a substring of the question. 
-
-    TEST: Search by any phrase. The questions list will update to include 
-    only question that include that string within their question. 
-    Try using the word "title" to start. 
-    '''
     # curl -X POST -H "Content-Type: application/json" -d 
     # '{"searchTerm": "title"}' http://127.0.0.1:5000/questions/search
     @app.route('/questions/search', methods=['POST'])
     def search_questions():
-        """Find all questions based on a search term"""
+        """Post request to find all questions based on a search term"""
+
+        # Collect data from the form
         body = request.get_json()
         search_term = body.get('searchTerm', None)
 
+        # Retrive data filtered by search term 
         if search_term is not None:
             selection = Question.query.filter(
                 Question.question.ilike(f'%{search_term}%')).all()
             current_questions = paginate_questions(request, selection)
 
+
+            # Abort 404 if result is empty
             if len(current_questions)== 0:
                 abort(404)
 
+            # Return data in JSON format
             return jsonify({
                 "success": True,
                 "questions": current_questions,
@@ -207,41 +198,36 @@ def create_app(test_config=None):
             })
 
 
-    '''
-    @TODO: 
-    Create a GET endpoint to get questions based on category. 
-
-    TEST: In the "List" tab / main screen, clicking on one of the 
-    categories in the left column will cause only questions of that 
-    category to be shown. 
-    '''
     # curl -i http://127.0.0.1:5000/categories/1/questions
     @app.route('/categories/<int:id>/questions')
     def retrieve_questions_by_category(id):
+        """Get all questions in category"""
+
+        # Retrieve category by id
         category = Category.query.filter(
                 Category.id == id).one_or_none()     
-            
+        
+        # Abort 400 if result is None
         if category is None:
             abort(400)
 
-        try:
-            selection = Question.query.filter(
-                Question.category == category.id).all()
+        # Retrieve paginated questions for return message
+        selection = Question.query.filter(
+            Question.category == category.id).all()
+        current_questions = paginate_questions(request, selection)
 
-            if len(selection) == 0:
-                abort(404)
-            
-            current_questions = paginate_questions(request, selection)
+        # Abort 404 if result is empty
+        if len(selection) == 0:
+            abort(404)       
 
-            return jsonify({
-                "success": True,
-                'current_category': category.type,
-                "questions": current_questions,
-                "total_questions_by_category": len(selection)
-            })
-        
-        except:
-            abort(422)
+        # Return data in JSON format
+        return jsonify({
+            "success": True,
+            'current_category': category.type,
+            "questions": current_questions,
+            "total_questions_by_category": len(selection)
+        })
+
 
 
     '''
@@ -255,6 +241,7 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
+
 
     ##############################################
     ###             Error handlers             ###
