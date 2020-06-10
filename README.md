@@ -120,6 +120,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ```
 
 #### GET '/questions/?page=<int:page_num>' | Retrieve questions by page
+     --------------------------------------|----------------------------
 - Request Parameters: page number
 - Example of request:
 
