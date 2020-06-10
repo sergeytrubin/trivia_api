@@ -119,9 +119,10 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 }
 ```
 
-#### GET '/questions'
+#### `GET '/questions/?page=<int:page_num>'` 
 - Request Parameters: page number
 - Example of request:
+
 ```
 curl -i http://127.0.0.1:5000/questions?page=1
 ```
@@ -215,10 +216,39 @@ curl -i http://127.0.0.1:5000/questions?page=1
 }
 
 ```
+#### `DELETE '/questions'` Delete question by id
+- Request Parameters: question id
+- Example of request:
 
+```
+curl -X DELETE http://127.0.0.1:5000/questions/20
+```
 
+- Example of response:
 
+```
+{
+  "deleted": 20,
+  "success": true,
+  "total_questions": 16
+}
+```
 
+#### GET '/questions'
+- Request Parameters: page number
+- Example of request:
+
+#### GET '/questions'
+- Request Parameters: page number
+- Example of request:
+
+#### GET '/questions'
+- Request Parameters: page number
+- Example of request:
+
+#### GET '/questions'
+- Request Parameters: page number
+- Example of request:
 
 ## Testing
 To run the tests, run
