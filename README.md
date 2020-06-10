@@ -458,11 +458,12 @@ psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
 
-##Authors:
-Sergey Trubin:
+## Authors:
+
 #### Backend:
-backend/flaskr/__init__.py
-backend/test_flaskr.py
+- Sergey Trubin:
+  - backend/flaskr/__init__.py
+  - backend/test_flaskr.py
 
 #### Frontend and all the rest:
-Udacity team
+- Udacity team
