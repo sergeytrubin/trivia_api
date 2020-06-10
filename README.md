@@ -101,7 +101,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ### Endpoints
 
 #### Retrive all categories:
-#### GET '/categories' 
+#### GET `'/categories'`
 - Request Parameters: None
 - Example of response:
 
@@ -239,7 +239,7 @@ curl -X DELETE http://127.0.0.1:5000/questions/20
 }
 ```
 #### Create question:
-#### POST '/questions'
+#### POST `'/questions'`
 - Request Parameters: JSON data with new question details
 - Example of request:
 
@@ -340,7 +340,7 @@ curl -X POST -H "Content-Type: application/json" -d 'JSON_data
 ```
 
 #### Search questions by given search term
-#### POST '/questions/search'
+#### POST `'/questions/search'`
 - Request Parameters: JSON data with the search term
 - Example of request:
 
@@ -409,7 +409,7 @@ curl -i http://127.0.0.1:5000/categories/1/questions
 ```
 
 #### Retreive random question for the quiz game
-#### POST '/quizzes'
+#### POST `'/quizzes'`
 - Request Parameters: JSON data
 - Example of request:
 
