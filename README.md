@@ -121,9 +121,13 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 
 #### GET '/questions'
 - Request Parameters: page number
--Example of request:
-`curl -i http://127.0.0.1:5000/questions?page=1`
--Example of response:
+- Example of request:
+```
+curl -i http://127.0.0.1:5000/questions?page=1
+```
+
+- Example of response:
+
 ```
 {
   "categories": {
