@@ -1,4 +1,4 @@
-# Full Stack Trivia API Backend
+# Full Stack Trivia API Backend | Udacity FSND Project 2
 ### Project features:
 
 1. Display trivia questions:
