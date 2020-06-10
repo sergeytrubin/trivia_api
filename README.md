@@ -100,6 +100,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 - Request Parameters: None
 - Example of response:
 
+```
 {
   "categories": {
     "1": "Science",
@@ -112,7 +113,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
   "success": true,
   "total_categories": 6
 }
-
+```
 
 ## Testing
 To run the tests, run
