@@ -89,9 +89,9 @@ class TriviaTestCase(unittest.TestCase):
     def test_delete_question(self):
         """Test: Delete a question. Runs only the first time"""
         # Variables
-        res = self.client().delete('/questions/2')
+        res = self.client().delete('/questions/5')
         data = json.loads(res.data)
-        question = Question.query.filter(Question.id == 2).one_or_none()
+        question = Question.query.filter(Question.id == 5).one_or_none()
 
         # Tests
         self.assertEqual(res.status_code, 200)

@@ -21,6 +21,7 @@ def paginate_questions(request, selection):
 
     return current_questions
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -31,11 +32,11 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         response.headers.add(
-            'Access-Control-Allow-Headers', 
+            'Access-Control-Allow-Headers',
             'Content-Type,Authorization,true'
         )
         response.headers.add(
-            'Access-Control-Allow-Methods', 
+            'Access-Control-Allow-Methods',
             'GET,PUT,POST,DELETE,OPTIONS'
         )
         return response
@@ -44,7 +45,6 @@ def create_app(test_config=None):
     ###             Endpoints                  ###
     ##############################################
 
-
     # Test: curl -i http://127.0.0.1:5000/categories
     @app.route('/categories')
     def get_categories():
@@ -52,7 +52,7 @@ def create_app(test_config=None):
 
         # Retrieve all categories
         selection = Category.query.all()
-        
+
         # Add categories to dictionary
         categories = {category.id: category.type for category in selection}
 
@@ -66,7 +66,6 @@ def create_app(test_config=None):
             "categories": categories,
             "total_categories": len(selection)
         })
-
 
     #Test: curl -i http://127.0.0.1:5000/questions?page=1
     @app.route('/questions')
@@ -83,7 +82,7 @@ def create_app(test_config=None):
 
         # Retrieve and add categories to dictionary
         categories = {
-            category.id: category.type for category in Category.query.all()}      
+            category.id: category.type for category in Category.query.all()}
 
         # Return data in JSON format
         return jsonify({
@@ -92,7 +91,6 @@ def create_app(test_config=None):
             "total_questions": len(selection),
             "categories": categories
         })
-
 
     # Test delete question: curl -X DELETE http://127.0.0.1:5000/questions/8
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
@@ -121,16 +119,16 @@ def create_app(test_config=None):
                 "deleted": question_id,
                 "total_questions": len(selection)
             })
-        
+
         except:
             # Abort 422 if delete could not be processed
             abort(422)
 
 
     # Test create new question
-    # curl -X POST -H "Content-Type: application/json" -d 
-    # '{"question": "Who came up with the three laws of motion?", 
-    # "answer": "Sir Isaac Newton", "category": 4, "difficulty": 1}' 
+    # curl -X POST -H "Content-Type: application/json" -d
+    # '{"question": "Who came up with the three laws of motion?",
+    # "answer": "Sir Isaac Newton", "category": 4, "difficulty": 1}'
     # http://127.0.0.1:5000/questions
     @app.route('/questions', methods=['POST'])
     def add_question():
@@ -151,7 +149,7 @@ def create_app(test_config=None):
                 question=new_question,
                 answer=new_answer,
                 category=new_category,
-                difficulty=new_difficulty 
+                difficulty=new_difficulty
             )
             question.insert()
 
@@ -165,11 +163,11 @@ def create_app(test_config=None):
                 "questions": current_questions,
                 "total_questions": len(selection)
             })
-        
+
         except:
             abort(422)
 
-    # curl -X POST -H "Content-Type: application/json" -d 
+    # curl -X POST -H "Content-Type: application/json" -d
     # '{"searchTerm": "title"}' http://127.0.0.1:5000/questions/search
     @app.route('/questions/search', methods=['POST'])
     def search_questions():
@@ -179,7 +177,7 @@ def create_app(test_config=None):
         body = request.get_json()
         search_term = body.get('searchTerm', None)
 
-        # Retrive data filtered by search term 
+        # Retrive data filtered by search term
         if search_term is not None:
             selection = Question.query.filter(
                 Question.question.ilike(f'%{search_term}%')).all()
@@ -205,8 +203,8 @@ def create_app(test_config=None):
 
         # Retrieve category by id
         category = Category.query.filter(
-                Category.id == category_id).one_or_none()     
-        
+                Category.id == category_id).one_or_none()
+
         # Abort 400 if result is None
         if category is None:
             abort(400)
@@ -218,7 +216,7 @@ def create_app(test_config=None):
 
         # Abort 404 if result is empty
         if len(selection) == 0:
-            abort(404)       
+            abort(404)
 
         # Return data in JSON format
         return jsonify({
@@ -228,9 +226,9 @@ def create_app(test_config=None):
             "total_questions_by_category": len(selection)
         })
 
-    #curl -X POST -H "Content-Type: application/json" -d 
-    # '{"previous_questions": [], 
-    # "quiz_category": {"type": "Science", "id": 1}}' 
+    #curl -X POST -H "Content-Type: application/json" -d
+    # '{"previous_questions": [],
+    # "quiz_category": {"type": "Science", "id": 1}}'
     # http://127.0.0.1:5000/quizzes
     @app.route('/quizzes', methods=['POST'])
     def play_trivia_quiz():
@@ -260,7 +258,7 @@ def create_app(test_config=None):
                     "success": True,
                     "question": None
                 })
-            
+
             # Retrieve new random question fron the selection
             new_question = selection[random.randrange(0, len(selection))]
 
@@ -310,7 +308,7 @@ def create_app(test_config=None):
             "error": 422,
             "message": "Unprocessable Entity"
         }), 422
-    
+
     @app.errorhandler(500)
     def server_error(error):
         return jsonify({
@@ -321,4 +319,3 @@ def create_app(test_config=None):
 
     return app
 
-    
