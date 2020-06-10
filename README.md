@@ -100,7 +100,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 
 ### Endpoints
 
-#### GET '/categories'
+#### GET '/categories' | Retrive all categories
 - Request Parameters: None
 - Example of response:
 
@@ -120,7 +120,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ```
 
 #### GET '/questions/?page=<int:page_num>' | Retrieve questions by page
-     --------------------------------------|----------------------------
+
 - Request Parameters: page number
 - Example of request:
 
@@ -217,7 +217,7 @@ curl -i http://127.0.0.1:5000/questions?page=1
 }
 
 ```
-#### `DELETE '/questions'` Delete question by id
+#### DELETE '/questions/<int:question_id>' | Delete question by id
 - Request Parameters: question id
 - Example of request:
 
@@ -235,9 +235,105 @@ curl -X DELETE http://127.0.0.1:5000/questions/20
 }
 ```
 
-#### GET '/questions'
-- Request Parameters: page number
+#### POST '/questions' | Create question
+- Request Parameters: JSON data with new question details
 - Example of request:
+
+```
+curl -X POST -H "Content-Type: application/json" -d 'JSON_data
+```
+
+-Example of JSON_data:
+
+```
+{
+	"question": "Who came up with the three laws of motion?", 
+	"answer": "Sir Isaac Newton", 
+	"category": 4, 
+	"difficulty": 1
+}
+```
+-Example of response:
+
+```
+{
+  "created": 27,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 17
+}
+```
 
 #### GET '/questions'
 - Request Parameters: page number
