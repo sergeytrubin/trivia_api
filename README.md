@@ -462,7 +462,7 @@ python test_flaskr.py
 
 #### Backend:
 - Sergey Trubin:
-  - backend/flaskr/__init__.py
+  - backend/flaskr/`__init__.py`
   - backend/test_flaskr.py
 
 #### Frontend and all the rest:
