@@ -1,5 +1,5 @@
 # Full Stack Trivia API Backend
-### Project features
+### Project features:
 
 1. Display trivia questions:
     - Player can display all the questions
@@ -8,8 +8,8 @@
 3. Player is able to create new question.
 4. Player can search for question based on a text query string.
 5. Play the quiz game:
- - Player have an option to randomize all questions
- - Player have an option to randomize question within specific category.
+    - Player have an option to randomize all questions
+    - Player have an option to randomize question within specific category.
 
 
 ## Getting Started
@@ -24,15 +24,15 @@ This project depends on Nodejs and Node Package Manager (NPM). Before continuing
 
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
 
-$npm install
+`$npm install`
 
-## Running Your Frontend in Dev Mode
+#### Running Your Frontend in Dev Mode
 
 The frontend app was built using create-react-app. In order to run the app in development mode use ```npm start```. You can change the script in the ```package.json``` file. 
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser. The page will reload if you make edits.<br>
 
-$npm start
+`$npm start`
 
 
 ### Backend Dependencies
@@ -49,7 +49,7 @@ We recommend working within a virtual environment whenever using Python for proj
 
 Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
 
-$pip install -r requirements.txt
+`$pip install -r requirements.txt`
 
 
 This will install all of the required packages we selected within the `requirements.txt` file.
@@ -62,28 +62,32 @@ This will install all of the required packages we selected within the `requireme
 
 - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
 
-## Database Setup
+#### Database Setup
 With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
 
-$psql trivia < trivia.psql
+`$psql trivia < trivia.psql`
 
 
-## Running the server
+#### Running the server
 
 From within the `backend` directory first ensure you are working using your created virtual environment.
 
-Environment Variables to run the server are stored in ".flaskenv" file. Please make sure that python-dotnet module is instaled ($pip list)
+Environment Variables to run the server are stored in ".flaskenv" file. Please make sure that python-dotnet module is instaled `($pip list)`
 
+```
 $cat .flaskenv
 FLASK_APP=flaskr
 FLASK_ENV=development
+```
 
 Alternatively, it is possible to add flask variables by running:
+```
 $export FLASK_APP=flaskr
 $export FLASK_ENV=development
+```
 
 To run the server:
-$flask run
+`$flask run`
 
 
 Setting the `FLASK_ENV` variable to `development` will detect file changes and restart the server automatically.
@@ -96,13 +100,356 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 
 ### Endpoints
 
-#### GET '/categories'
+#### Retrive all categories:
+#### GET '/categories' 
 - Request Parameters: None
 - Example of response:
 
+```
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true,
+  "total_categories": 6
+}
+```
 
+#### Retrieve questions by page:
+#### GET `'/questions/?page=<int:page_num>'` 
 
-## Testing
+- Request Parameters: page number
+- Example of request:
+
+```
+curl -i http://127.0.0.1:5000/questions?page=1
+```
+
+- Example of response:
+
+```
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 17
+}
+
+```
+
+#### Delete question by id:
+#### DELETE `'/questions/<int:question_id>'` 
+- Request Parameters: question id
+- Example of request:
+
+```
+curl -X DELETE http://127.0.0.1:5000/questions/20
+```
+
+- Example of response:
+
+```
+{
+  "deleted": 20,
+  "success": true,
+  "total_questions": 16
+}
+```
+#### Create question:
+#### POST '/questions'
+- Request Parameters: JSON data with new question details
+- Example of request:
+
+```
+curl -X POST -H "Content-Type: application/json" -d 'JSON_data
+```
+
+- Example of JSON_data:
+
+```
+{
+	"question": "Who came up with the three laws of motion?", 
+	"answer": "Sir Isaac Newton", 
+	"category": 4, 
+	"difficulty": 1
+}
+```
+- Example of response:
+
+```
+{
+  "created": 27,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 17
+}
+```
+
+#### Search questions by given search term
+#### POST '/questions/search'
+- Request Parameters: JSON data with the search term
+- Example of request:
+
+```
+curl -X POST -H "Content-Type: application/json" -d '{"searchTerm": "title"}' 
+```
+
+- Example of response:
+
+```
+{
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ],
+  "success": true,
+  "total_found_questions": 2
+}
+```
+
+#### Retrieve questions by category
+#### GET `'/categories/<int:category_id>/questions'`
+- Request Parameters: Category id
+- Example of request:
+
+```
+curl -i http://127.0.0.1:5000/categories/1/questions
+```
+
+- Example of repsponse:
+
+```
+{
+  "current_category": "Science",
+  "questions": [
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "success": true,
+  "total_questions_by_category": 2
+}
+```
+
+#### Retreive random question for the quiz game
+#### POST '/quizzes'
+- Request Parameters: JSON data
+- Example of request:
+
+```
+curl -X POST -H "Content-Type: application/json" -d JSON_data
+```
+
+- Example of JSON_data:
+
+```
+{"previous_questions": [], "quiz_category": {"type": "Science", "id": 1}}
+```
+
+- Example of response:
+
+```
+{
+  "question": {
+    "answer": "Blood",
+    "category": 1,
+    "difficulty": 4,
+    "id": 22,
+    "question": "Hematology is a branch of medicine involving the study of what?"
+  },
+  "success": true
+}
+```
+
+### Error handling
+- Example of error response:
+
+```
+{
+  "error": 404,
+  "message": "Not Found",
+  "success": false
+}
+```
+
+### Testing
 To run the tests, run
 ```
 dropdb trivia_test
@@ -110,3 +457,13 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+## Authors:
+
+#### Backend:
+- Sergey Trubin:
+  - backend/flaskr/`__init__.py`
+  - backend/test_flaskr.py
+
+#### Frontend and all the rest:
+- Udacity team
