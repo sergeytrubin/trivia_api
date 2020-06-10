@@ -1,5 +1,5 @@
 # Full Stack Trivia API Backend
-### Project features
+### Project features:
 
 1. Display trivia questions:
     - Player can display all the questions
@@ -24,7 +24,7 @@ This project depends on Nodejs and Node Package Manager (NPM). Before continuing
 
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
 
-$npm install
+`$npm install`
 
 ## Running Your Frontend in Dev Mode
 
