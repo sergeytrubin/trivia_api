@@ -121,7 +121,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ```
 
 #### Retrieve questions by page:
-#### GET '/questions/?page=<int:page_num>' 
+#### GET `'/questions/?page=<int:page_num>'` 
 
 - Request Parameters: page number
 - Example of request:
@@ -221,7 +221,7 @@ curl -i http://127.0.0.1:5000/questions?page=1
 ```
 
 #### Delete question by id:
-#### DELETE '/questions/<int:question_id>' 
+#### DELETE `'/questions/<int:question_id>'` 
 - Request Parameters: question id
 - Example of request:
 
@@ -374,7 +374,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"searchTerm": "title"}'
 ```
 
 #### Retrieve questions by category
-#### GET '/categories/<int:category_id>/questions'
+#### GET `'/categories/<int:category_id>/questions'`
 - Request Parameters: Category id
 - Example of request:
 
@@ -382,7 +382,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"searchTerm": "title"}'
 curl -i http://127.0.0.1:5000/categories/1/questions
 ```
 
--Example of repsponse:
+- Example of repsponse:
 
 ```
 {
@@ -458,4 +458,11 @@ psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
 
+##Authors:
+Sergey Trubin:
+#### Backend:
+backend/flaskr/__init__.py
+backend/test_flaskr.py
 
+#### Frontend and all the rest:
+Udacity team
