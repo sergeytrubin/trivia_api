@@ -8,8 +8,8 @@
 3. Player is able to create new question.
 4. Player can search for question based on a text query string.
 5. Play the quiz game:
- - Player have an option to randomize all questions
- - Player have an option to randomize question within specific category.
+    - Player have an option to randomize all questions
+    - Player have an option to randomize question within specific category.
 
 
 ## Getting Started
@@ -100,6 +100,18 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 - Request Parameters: None
 - Example of response:
 
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true,
+  "total_categories": 6
+}
 
 
 ## Testing
